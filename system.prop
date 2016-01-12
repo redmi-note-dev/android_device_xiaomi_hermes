@@ -58,7 +58,7 @@ qemu.hw.mainkeys=1
 
 ro.kernel.zio=38,108,105,16
 #ro.kernel.qemu=1
-#ro.boot.selinux=disable
+ro.boot.selinux=disable
 #ro.kernel.qemu.gles=0
 
 # Disable dirty region for Mali
