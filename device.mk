@@ -201,6 +201,7 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES := \
      ro.mount.fs=EXT4 \
      persist.service.acm.enable=0 \
      persist.sys.usb.config=mtp,mass_storage,adb \
+     ro.hardware=mt6795 \
      persist.sys.timezone=Europe/Moscow
 
 PRODUCT_PROPERTY_OVERRIDES += \
