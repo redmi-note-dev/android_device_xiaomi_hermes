@@ -55,7 +55,7 @@ BOARD_KERNEL_BASE := 0x40078000
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_MKBOOTIMG_ARGS := --base 0x40078000 --pagesize 2048 --kernel_offset 0x00008000 --ramdisk_offset 0x03f88000 --second_offset 0x00e88000 --tags_offset 0x0df88000 --board Bule
 TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/prebuit/kernel
-BOARD_CUSTOM_BOOTIMG := true
+#BOARD_CUSTOM_BOOTIMG := true
 # MKImage
 TARGET_MKIMAGE := $(LOCAL_PATH)/mkimage
 TARGET_USE_BUILT_BOOTIMAGE := true
