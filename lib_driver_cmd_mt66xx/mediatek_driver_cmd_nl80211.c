@@ -1,4 +1,4 @@
-#include "hardware_legacy/driver_nl80211.h"
+#include "driver_nl80211.h"
 #include "mediatek_driver_nl80211.h"
 #include "wpa_supplicant_i.h"
 #include "config.h"
