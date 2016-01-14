@@ -1,17 +1,8 @@
 diff -crB 1/core/generate_extra_images.mk 2/core/generate_extra_images.mk
-*** 1/core/generate_extra_images.mk	2016-01-14 05:33:10.229417711 -0500
---- 2/core/generate_extra_images.mk	2016-01-14 05:33:23.077417711 -0500
+*** 1/core/generate_extra_images.mk	2016-01-14 11:10:17.803673000 +0000
+--- 2/core/generate_extra_images.mk	2016-01-14 11:10:50.271673000 +0000
 ***************
 *** 19,26 ****
-  INSTALLED_SEC_RECOVERYIMAGE_TARGET := $(PRODUCT_OUT)/recovery.img.secure
-  
-  ifneq ($(BUILD_TINY_ANDROID),true)
-! #intermediates := $(call intermediates-dir-for,PACKAGING,recovery_patch)
-! #RECOVERY_FROM_BOOT_PATCH := 
-  endif
-  
-  ifndef TARGET_SHA_TYPE
---- 19,26 ----
   INSTALLED_SEC_RECOVERYIMAGE_TARGET := $(PRODUCT_OUT)/recovery.img.secure
   
   ifneq ($(BUILD_TINY_ANDROID),true)
@@ -20,43 +11,34 @@ diff -crB 1/core/generate_extra_images.mk 2/core/generate_extra_images.mk
   endif
   
   ifndef TARGET_SHA_TYPE
+--- 19,26 ----
+  INSTALLED_SEC_RECOVERYIMAGE_TARGET := $(PRODUCT_OUT)/recovery.img.secure
+  
+  ifneq ($(BUILD_TINY_ANDROID),true)
+! #intermediates := $(call intermediates-dir-for,PACKAGING,recovery_patch)
+! #RECOVERY_FROM_BOOT_PATCH := 
+  endif
+  
+  ifndef TARGET_SHA_TYPE
 diff -crB 1/core/Makefile 2/core/Makefile
-*** 1/core/Makefile	2016-01-14 05:33:10.217417711 -0500
---- 2/core/Makefile	2016-01-14 05:33:23.069417711 -0500
+*** 1/core/Makefile	2016-01-14 11:10:17.795673000 +0000
+--- 2/core/Makefile	2016-01-14 11:10:50.263673000 +0000
 ***************
-*** 1092,1099 ****
---- 1092,1102 ----
+*** 1092,1102 ****
   	$(call generate-userimage-prop-dictionary, $(ota_temp_root)/META/misc_info.txt)
   	$(hide) cp -r $(PRODUCT_OUT)/boot.img $(ota_temp_root)/BOOTABLE_IMAGES/
   	$(hide) cp -r $(PRODUCT_OUT)/recovery.img $(ota_temp_root)/BOOTABLE_IMAGES/
-+ 	$(hide) ./build/tools/releasetools/make_recovery_patch $(ota_temp_root) $(ota_temp_root)
+- 	$(hide) ./build/tools/releasetools/make_recovery_patch $(ota_temp_root) $(ota_temp_root)
   	$(hide) rm -f $(TARGET_OUT)/bin/install-recovery.sh
   	$(hide) rm -f $(TARGET_OUT)/recovery-from-boot.p
-+ 	$(hide) cp $(ota_temp_root)/SYSTEM/bin/install-recovery.sh $(TARGET_OUT)/bin/install-recovery.sh
-+ 	$(hide) cp $(ota_temp_root)/SYSTEM/recovery-from-boot.p $(TARGET_OUT)/recovery-from-boot.p
+- 	$(hide) cp $(ota_temp_root)/SYSTEM/bin/install-recovery.sh $(TARGET_OUT)/bin/install-recovery.sh
+- 	$(hide) cp $(ota_temp_root)/SYSTEM/recovery-from-boot.p $(TARGET_OUT)/recovery-from-boot.p
   
   $(RECOVERY_RESOURCE_ZIP): $(INSTALLED_RECOVERYIMAGE_TARGET)
   	$(hide) mkdir -p $(dir $@)
+--- 1092,1099 ----
 ***************
-*** 1235,1251 ****
-  # as the source (since they are very similar).  Generate the patch so
-  # we can see how big it's going to be, and include that in the system
-  # image size check calculation.
-! #ifneq ($(INSTALLED_RECOVERYIMAGE_TARGET),)
-! #intermediates := $(call intermediates-dir-for,PACKAGING,recovery_patch)
-! #RECOVERY_FROM_BOOT_PATCH := $(intermediates)/recovery_from_boot.p
-! #$(RECOVERY_FROM_BOOT_PATCH): $(INSTALLED_RECOVERYIMAGE_TARGET) \
-! #                            $(INSTALLED_BOOTIMAGE_TARGET) \
-! #			     $(HOST_OUT_EXECUTABLES)/imgdiff \
-! #	                     $(HOST_OUT_EXECUTABLES)/bsdiff
-! #	@echo -e ${CL_CYN}"Construct recovery from boot"${CL_RST}
-! #	mkdir -p $(dir $@)
-! #	PATH=$(HOST_OUT_EXECUTABLES):$$PATH $(HOST_OUT_EXECUTABLES)/imgdiff $(INSTALLED_BOOTIMAGE_TARGET) $(INSTALLED_RECOVERYIMAGE_TARGET) $@
-! #endif
-  
-  
-  $(INSTALLED_SYSTEMIMAGE): $(BUILT_SYSTEMIMAGE) $(RECOVERY_FROM_BOOT_PATCH) | $(ACP)
---- 1238,1262 ----
+*** 1238,1262 ****
   # as the source (since they are very similar).  Generate the patch so
   # we can see how big it's going to be, and include that in the system
   # image size check calculation.
@@ -82,19 +64,29 @@ diff -crB 1/core/Makefile 2/core/Makefile
   
   
   $(INSTALLED_SYSTEMIMAGE): $(BUILT_SYSTEMIMAGE) $(RECOVERY_FROM_BOOT_PATCH) | $(ACP)
+--- 1235,1251 ----
+  # as the source (since they are very similar).  Generate the patch so
+  # we can see how big it's going to be, and include that in the system
+  # image size check calculation.
+! #ifneq ($(INSTALLED_RECOVERYIMAGE_TARGET),)
+! #intermediates := $(call intermediates-dir-for,PACKAGING,recovery_patch)
+! #RECOVERY_FROM_BOOT_PATCH := $(intermediates)/recovery_from_boot.p
+! #$(RECOVERY_FROM_BOOT_PATCH): $(INSTALLED_RECOVERYIMAGE_TARGET) \
+! #                            $(INSTALLED_BOOTIMAGE_TARGET) \
+! #			     $(HOST_OUT_EXECUTABLES)/imgdiff \
+! #	                     $(HOST_OUT_EXECUTABLES)/bsdiff
+! #	@echo -e ${CL_CYN}"Construct recovery from boot"${CL_RST}
+! #	mkdir -p $(dir $@)
+! #	PATH=$(HOST_OUT_EXECUTABLES):$$PATH $(HOST_OUT_EXECUTABLES)/imgdiff $(INSTALLED_BOOTIMAGE_TARGET) $(INSTALLED_RECOVERYIMAGE_TARGET) $@
+! #endif
+  
+  
+  $(INSTALLED_SYSTEMIMAGE): $(BUILT_SYSTEMIMAGE) $(RECOVERY_FROM_BOOT_PATCH) | $(ACP)
 diff -crB 1/.git/config 2/.git/config
-*** 1/.git/config	2016-01-14 05:33:10.205417711 -0500
---- 2/.git/config	2016-01-14 05:33:23.049417711 -0500
+*** 1/.git/config	2016-01-14 11:10:17.739673000 +0000
+--- 2/.git/config	2016-01-14 11:10:50.251673000 +0000
 ***************
 *** 4,10 ****
-  	bare = false
-  	logallrefupdates = true
-  [remote "origin"]
-! 	url = https://github.com/jianminglok/android_build.git
-  	fetch = +refs/heads/*:refs/remotes/origin/*
-  [branch "cm-13.0"]
-  	remote = origin
---- 4,10 ----
   	bare = false
   	logallrefupdates = true
   [remote "origin"]
@@ -102,48 +94,48 @@ diff -crB 1/.git/config 2/.git/config
   	fetch = +refs/heads/*:refs/remotes/origin/*
   [branch "cm-13.0"]
   	remote = origin
+--- 4,10 ----
+  	bare = false
+  	logallrefupdates = true
+  [remote "origin"]
+! 	url = https://github.com/jianminglok/android_build.git
+  	fetch = +refs/heads/*:refs/remotes/origin/*
+  [branch "cm-13.0"]
+  	remote = origin
 Binary files 1/.git/index and 2/.git/index differ
 diff -crB 1/.git/logs/HEAD 2/.git/logs/HEAD
-*** 1/.git/logs/HEAD	2016-01-14 05:33:10.205417711 -0500
---- 2/.git/logs/HEAD	2016-01-14 05:33:23.049417711 -0500
+*** 1/.git/logs/HEAD	2016-01-14 11:10:17.739673000 +0000
+--- 2/.git/logs/HEAD	2016-01-14 11:10:50.251673000 +0000
 ***************
 *** 1 ****
-! 0000000000000000000000000000000000000000 2409ee5b7c4e721f4618849648b10d2844bb0dd2 jianminglok <jianminglok@hotmail.com> 1452767590 -0500	clone: from https://github.com/jianminglok/android_build.git
+! 0000000000000000000000000000000000000000 420da62d60b3197f6c7e57609beea915e4110092 jianminglok <jianminglok@hotmail.com> 1452769817 +0000	clone: from https://github.com/CyanogenMod/android_build.git
 --- 1 ----
-! 0000000000000000000000000000000000000000 420da62d60b3197f6c7e57609beea915e4110092 jianminglok <jianminglok@hotmail.com> 1452767603 -0500	clone: from https://github.com/CyanogenMod/android_build.git
+! 0000000000000000000000000000000000000000 2409ee5b7c4e721f4618849648b10d2844bb0dd2 jianminglok <jianminglok@hotmail.com> 1452769850 +0000	clone: from https://github.com/jianminglok/android_build.git
 diff -crB 1/.git/logs/refs/heads/cm-13.0 2/.git/logs/refs/heads/cm-13.0
-*** 1/.git/logs/refs/heads/cm-13.0	2016-01-14 05:33:10.205417711 -0500
---- 2/.git/logs/refs/heads/cm-13.0	2016-01-14 05:33:23.049417711 -0500
+*** 1/.git/logs/refs/heads/cm-13.0	2016-01-14 11:10:17.739673000 +0000
+--- 2/.git/logs/refs/heads/cm-13.0	2016-01-14 11:10:50.251673000 +0000
 ***************
 *** 1 ****
-! 0000000000000000000000000000000000000000 2409ee5b7c4e721f4618849648b10d2844bb0dd2 jianminglok <jianminglok@hotmail.com> 1452767590 -0500	clone: from https://github.com/jianminglok/android_build.git
+! 0000000000000000000000000000000000000000 420da62d60b3197f6c7e57609beea915e4110092 jianminglok <jianminglok@hotmail.com> 1452769817 +0000	clone: from https://github.com/CyanogenMod/android_build.git
 --- 1 ----
-! 0000000000000000000000000000000000000000 420da62d60b3197f6c7e57609beea915e4110092 jianminglok <jianminglok@hotmail.com> 1452767603 -0500	clone: from https://github.com/CyanogenMod/android_build.git
+! 0000000000000000000000000000000000000000 2409ee5b7c4e721f4618849648b10d2844bb0dd2 jianminglok <jianminglok@hotmail.com> 1452769850 +0000	clone: from https://github.com/jianminglok/android_build.git
 diff -crB 1/.git/logs/refs/remotes/origin/HEAD 2/.git/logs/refs/remotes/origin/HEAD
-*** 1/.git/logs/refs/remotes/origin/HEAD	2016-01-14 05:33:10.205417711 -0500
---- 2/.git/logs/refs/remotes/origin/HEAD	2016-01-14 05:33:23.049417711 -0500
+*** 1/.git/logs/refs/remotes/origin/HEAD	2016-01-14 11:10:17.739673000 +0000
+--- 2/.git/logs/refs/remotes/origin/HEAD	2016-01-14 11:10:50.251673000 +0000
 ***************
 *** 1 ****
-! 0000000000000000000000000000000000000000 2409ee5b7c4e721f4618849648b10d2844bb0dd2 jianminglok <jianminglok@hotmail.com> 1452767590 -0500	clone: from https://github.com/jianminglok/android_build.git
+! 0000000000000000000000000000000000000000 0fa91accfb298f598cd0731d1c0680c3b7de4be3 jianminglok <jianminglok@hotmail.com> 1452769817 +0000	clone: from https://github.com/CyanogenMod/android_build.git
 --- 1 ----
-! 0000000000000000000000000000000000000000 0fa91accfb298f598cd0731d1c0680c3b7de4be3 jianminglok <jianminglok@hotmail.com> 1452767603 -0500	clone: from https://github.com/CyanogenMod/android_build.git
-Only in 2/.git/objects/pack: pack-85ae7a4d634e626854c6ab1ce4b5026198d6d299.idx
-Only in 2/.git/objects/pack: pack-85ae7a4d634e626854c6ab1ce4b5026198d6d299.pack
-Only in 1/.git/objects/pack: pack-86166f4aca3a43b8944ec4e7b0ad7efdd627dc3b.idx
-Only in 1/.git/objects/pack: pack-86166f4aca3a43b8944ec4e7b0ad7efdd627dc3b.pack
+! 0000000000000000000000000000000000000000 2409ee5b7c4e721f4618849648b10d2844bb0dd2 jianminglok <jianminglok@hotmail.com> 1452769850 +0000	clone: from https://github.com/jianminglok/android_build.git
+Only in 1/.git/objects/pack: pack-85ae7a4d634e626854c6ab1ce4b5026198d6d299.idx
+Only in 1/.git/objects/pack: pack-85ae7a4d634e626854c6ab1ce4b5026198d6d299.pack
+Only in 2/.git/objects/pack: pack-86166f4aca3a43b8944ec4e7b0ad7efdd627dc3b.idx
+Only in 2/.git/objects/pack: pack-86166f4aca3a43b8944ec4e7b0ad7efdd627dc3b.pack
 diff -crB 1/.git/packed-refs 2/.git/packed-refs
-*** 1/.git/packed-refs	2016-01-14 05:33:10.205417711 -0500
---- 2/.git/packed-refs	2016-01-14 05:33:23.049417711 -0500
+*** 1/.git/packed-refs	2016-01-14 11:10:17.739673000 +0000
+--- 2/.git/packed-refs	2016-01-14 11:10:50.251673000 +0000
 ***************
 *** 6,12 ****
-  040dbab8174ee8c4682795a68024b0ac08db7d65 refs/remotes/origin/cm-11.0
-  38169b9ef4aa59481a2b46cea5ec87ede02c6f35 refs/remotes/origin/cm-12.0
-  0fa91accfb298f598cd0731d1c0680c3b7de4be3 refs/remotes/origin/cm-12.1
-! 2409ee5b7c4e721f4618849648b10d2844bb0dd2 refs/remotes/origin/cm-13.0
-  f24a18f74172bd178b30caa7527b424c986b7180 refs/remotes/origin/cm-9.0.0
-  ec35a1ba962557a00983b4639c886658460cb3e9 refs/remotes/origin/cm-9.1.0
-  9edbe98514e0a6c5f3d431fb56200e8d6ada60de refs/remotes/origin/donut
---- 6,12 ----
   040dbab8174ee8c4682795a68024b0ac08db7d65 refs/remotes/origin/cm-11.0
   38169b9ef4aa59481a2b46cea5ec87ede02c6f35 refs/remotes/origin/cm-12.0
   0fa91accfb298f598cd0731d1c0680c3b7de4be3 refs/remotes/origin/cm-12.1
@@ -151,65 +143,73 @@ diff -crB 1/.git/packed-refs 2/.git/packed-refs
   f24a18f74172bd178b30caa7527b424c986b7180 refs/remotes/origin/cm-9.0.0
   ec35a1ba962557a00983b4639c886658460cb3e9 refs/remotes/origin/cm-9.1.0
   9edbe98514e0a6c5f3d431fb56200e8d6ada60de refs/remotes/origin/donut
+--- 6,12 ----
+  040dbab8174ee8c4682795a68024b0ac08db7d65 refs/remotes/origin/cm-11.0
+  38169b9ef4aa59481a2b46cea5ec87ede02c6f35 refs/remotes/origin/cm-12.0
+  0fa91accfb298f598cd0731d1c0680c3b7de4be3 refs/remotes/origin/cm-12.1
+! 2409ee5b7c4e721f4618849648b10d2844bb0dd2 refs/remotes/origin/cm-13.0
+  f24a18f74172bd178b30caa7527b424c986b7180 refs/remotes/origin/cm-9.0.0
+  ec35a1ba962557a00983b4639c886658460cb3e9 refs/remotes/origin/cm-9.1.0
+  9edbe98514e0a6c5f3d431fb56200e8d6ada60de refs/remotes/origin/donut
 diff -crB 1/.git/refs/heads/cm-13.0 2/.git/refs/heads/cm-13.0
-*** 1/.git/refs/heads/cm-13.0	2016-01-14 05:33:10.205417711 -0500
---- 2/.git/refs/heads/cm-13.0	2016-01-14 05:33:23.049417711 -0500
+*** 1/.git/refs/heads/cm-13.0	2016-01-14 11:10:17.739673000 +0000
+--- 2/.git/refs/heads/cm-13.0	2016-01-14 11:10:50.251673000 +0000
 ***************
 *** 1 ****
-! 2409ee5b7c4e721f4618849648b10d2844bb0dd2
---- 1 ----
 ! 420da62d60b3197f6c7e57609beea915e4110092
+--- 1 ----
+! 2409ee5b7c4e721f4618849648b10d2844bb0dd2
 diff -crB 1/.git/refs/remotes/origin/HEAD 2/.git/refs/remotes/origin/HEAD
-*** 1/.git/refs/remotes/origin/HEAD	2016-01-14 05:33:10.205417711 -0500
---- 2/.git/refs/remotes/origin/HEAD	2016-01-14 05:33:23.049417711 -0500
+*** 1/.git/refs/remotes/origin/HEAD	2016-01-14 11:10:17.739673000 +0000
+--- 2/.git/refs/remotes/origin/HEAD	2016-01-14 11:10:50.251673000 +0000
 ***************
 *** 1 ****
-! ref: refs/remotes/origin/cm-13.0
---- 1 ----
 ! ref: refs/remotes/origin/cm-12.1
+--- 1 ----
+! ref: refs/remotes/origin/cm-13.0
 diff -crB 1/tools/releasetools/common.py 2/tools/releasetools/common.py
-*** 1/tools/releasetools/common.py	2016-01-14 05:33:10.357417711 -0500
---- 2/tools/releasetools/common.py	2016-01-14 05:33:23.205417711 -0500
+*** 1/tools/releasetools/common.py	2016-01-14 11:10:17.919673000 +0000
+--- 2/tools/releasetools/common.py	2016-01-14 11:10:50.383673000 +0000
 ***************
-*** 1441,1448 ****
+*** 1441,1446 ****
+--- 1441,1448 ----
     corresponding images.  info should be the dictionary returned by
     common.LoadInfoDict() on the input target_files.
     """
--   
--   return
++   
++   return
   
     if info_dict is None:
       info_dict = OPTIONS.info_dict
---- 1441,1446 ----
 diff -crB 1/tools/releasetools/make_recovery_patch 2/tools/releasetools/make_recovery_patch
-*** 1/tools/releasetools/make_recovery_patch	2016-01-14 05:33:10.357417711 -0500
---- 2/tools/releasetools/make_recovery_patch	2016-01-14 05:33:23.209417711 -0500
+*** 1/tools/releasetools/make_recovery_patch	2016-01-14 11:10:17.919673000 +0000
+--- 2/tools/releasetools/make_recovery_patch	2016-01-14 11:10:50.383673000 +0000
 ***************
 *** 51,55 ****
     common.MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img)
   
   
-! #if __name__ == '__main__':
-! #  main(sys.argv[1:])
+! if __name__ == '__main__':
+!   main(sys.argv[1:])
 --- 51,55 ----
     common.MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img)
   
   
-! if __name__ == '__main__':
-!   main(sys.argv[1:])
+! #if __name__ == '__main__':
+! #  main(sys.argv[1:])
 diff -crB 1/tools/releasetools/make_recovery_patch.py 2/tools/releasetools/make_recovery_patch.py
-*** 1/tools/releasetools/make_recovery_patch.py	2016-01-14 05:33:10.357417711 -0500
---- 2/tools/releasetools/make_recovery_patch.py	2016-01-14 05:33:23.209417711 -0500
+*** 1/tools/releasetools/make_recovery_patch.py	2016-01-14 11:10:17.919673000 +0000
+--- 2/tools/releasetools/make_recovery_patch.py	2016-01-14 11:10:50.383673000 +0000
 ***************
 *** 51,55 ****
     common.MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img)
   
   
-! #if __name__ == '__main__':
-! #  main(sys.argv[1:])
+! if __name__ == '__main__':
+!   main(sys.argv[1:])
 --- 51,55 ----
     common.MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img)
   
   
-! if __name__ == '__main__':
-!   main(sys.argv[1:])
+! #if __name__ == '__main__':
+! #  main(sys.argv[1:])
