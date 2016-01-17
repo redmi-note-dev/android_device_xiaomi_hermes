@@ -13,11 +13,11 @@ git apply -v ../../device/xiaomi/hermes/patches/framework_base/0006-add-com.medi
 git apply -v ../../device/xiaomi/hermes/patches/framework_base/0007-Update-for-mtk.patch
 cd ../..
 cd frameworks/opt/telephony
-git apply -v ../../../system/device/xiaomi/hermes/patches/framework_opt_telephony/0001-Update-for-mtk.patch
+git apply -v ../../../device/xiaomi/hermes/patches/framework_opt_telephony/0001-Update-for-mtk.patch
 cd ../../..
 cd packages/services/Telephony
 git apply -v ../../../device/xiaomi/hermes/patches/packages_services_Telpheony/0001-Update-for-mtk.patch
-cd ~/android/system
+cd ../../..
 source build/envsetup.sh
 breakfast hermes
 make -j2 bacon
