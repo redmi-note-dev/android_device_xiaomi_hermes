@@ -1,4 +1,12 @@
-# android_device_xiaomi_hermes
-#Special thanks to nofearnohappy, lbule , Niisp , xen0n and xiaomi-dev(Ivan)
+# CM12.1 Device tree for Redmi Note 2 (HERMES)
 
-CM12.1 for Xiaomi Redmi Note 2 (MT6795)
+### Other resource:
+  - Kernel source: Not released yet
+  - Vendor blobs: https://github.com/jianminglok/android_vendor_xiaomi_hermes
+
+### Credits (Sort by alphabetical order):
+  - lbule
+  - nofearnohappy
+  - The CyanogenMod Team
+  - xen0n
+  - xiaomi-dev (ivan19871002)
