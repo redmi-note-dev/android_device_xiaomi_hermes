@@ -20,7 +20,7 @@ git apply -v ../../../device/xiaomi/hermes/patches/packages_services_Telpheony/0
 cd ~/android/system
 source build/envsetup.sh
 breakfast hermes
-make -j4 bacon
+make -j2 bacon
 
 
 
